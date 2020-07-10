@@ -171,267 +171,278 @@ def cards(bet):
             return
 
 
-roulette_money = 100
-
+roulette_money = 500
+red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
+black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
+first_column = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
+second_column = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
+third_column = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36]
 
 def roulette(guess, bet):
-    red_numbers = [1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36]
-    black_numbers = [2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35]
-    first_column = [1, 4, 7, 10, 13, 16, 19, 22, 25, 28, 31, 34]
-    second_column = [2, 5, 8, 11, 14, 17, 20, 23, 26, 29, 32, 35]
-    third_column = [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36]
     global roulette_money
     result = random.randint(-1, 36)
     if bet > roulette_money:
         print("You bet ${bet} but you only have ${money} you cannot bet more than you have".format(bet=bet, money=roulette_money))
-    # straight number bet
     elif bet < 1 and isinstance(guess, int) and guess < 1:
         print("Invalid guess and invalid bet. Please enter a number greater than 0 for your bet and a number between 1 and 36 if your guess is a single number bet")
     elif isinstance(guess, int) and guess < 1 and bet > 0:
         print("Invalid guess, please enter a number between 1 and 36 for your guess")
     elif bet < 1 and isinstance(guess, int) and 1 < guess < 36:
         print("Invalid bet, please enter a positive number for your bet.")
+    elif isinstance(guess, list) and len(guess) != 2 and len(guess) != 3 and len(guess) != 4 and len(guess) != 5 and len(guess) != 6:
+        print("You entered an invalid argument into the function please enter one of the following: \n An integer for a straight number bet \n \"odd\" or \"even\" for an odd/even bet \n \"red\" or \"black\" for a red/black bet \n \"high\" or \"low\" for a high/low bet \n \"1st dozen\", \"2nd dozen\" or \"3rd dozen\" for a dozens bet \n \"1st column\", \"2nd column\" or \"3rd column\" for a columns bet \n A list of 2 consecutive numbers for a split bet \n A list of 3 consecutive numbers for a street bet \n A list of 4 numbers for a sqaure bet \n A list of 5 numbers from -1 to 3 for a 5 number bet \n A list of 6 numbers for a six line bet.")
+    elif isinstance(guess, str) and "red" not in guess.lower() and "black" not in guess.lower() and "high" not in guess.lower() and "low" not in guess.lower() and "even" \
+                not in guess.lower() and "odd" not in guess.lower() and "1st column" not in guess.lower() and "first column" not in guess.lower() and "2nd column" not in guess.lower() and "second column" not in guess.lower() and "3rd column" not in guess.lower() and "third column" not in guess.lower() and "1st dozen" not in guess.lower() and "first dozen" not in guess.lower() and "2nd dozen" not in guess.lower() and "second dozen" not in guess.lower() and "3rd dozen" not in guess.lower() and "third dozen" not in guess.lower():
+        print("You entered an invalid argument into the function please enter one of the following: \n An integer for a straight number bet \n \"odd\" or \"even\" for an odd/even bet \n \"red\" or \"black\" for a red/black bet \n \"high\" or \"low\" for a high/low bet \n \"1st dozen\" or \"first dozen\", \"2nd dozen\" or \"second dozen\" or \"3rd dozen\" or \"third dozen\" for a dozens bet \n \"1st column\" or \"first column\", \"2nd column\" or \"second column\" or \"3rd column\" or \"third column\" for a columns bet \n A list of 2 numbers for a split bet \n A list of 3 consecutive numbers for a street bet \n A list of 4 numbers for a sqaure bet \n A list of 6 numbers for a six line bet.")
+
     else:
-
+        #single number bet
         if isinstance(guess, int):
-            if result == -1:
-                roulette_money -= (bet)
-                print("Double zero, you lost!")
-            elif result == 0:
-                roulette_money -= (bet)
-                print("Zero, you lost!")
-            elif result == guess:
-                roulette_money += (bet * 35)
-                print("You guessed {guess} and the result was {result}, you won!".format(guess=guess, result=result))
-            elif result != guess:
-                roulette_money -= (bet)
-                print("You guessed {guess} and the result was {result}, you lost!".format(guess=guess, result=result))
+            integer(result, guess, bet)
+        # highs/lows, odds/evens/columns,dozens
         if isinstance(guess, str):
-            if result == - 1:
-                roulette_money -= bet
-                print("Double zero, you lost!")
-            elif result == 0:
-                roulette_money -= bet
-                print("Zero, you lost!")
-
-
-            # odds and evens bets
-            elif "even" in guess.lower() and result % 2 == 0:
-                roulette_money += bet
-                print("You guessed {guess} and the result was {result}, You won!".format(guess=guess, result=result))
-            elif "even" in guess.lower() and result % 2 != 0:
-                roulette_money -= bet
-                print("You guessed {guess} and the result was {result}, you lost!".format(guess=guess, result=result))
-            elif "odd" in guess.lower() and result % 2 == 0:
-                roulette_money -= bet
-                print("You guessed {guess} and the result was {result}, you lost!".format(guess=guess, result=result))
-            elif "odd" in guess.lower() and result % 2 != 0:
-                roulette_money += bet
-                print("You guessed {guess} and the result is {result}, You won!".format(guess=guess, result=result))
-
-
-            # red/black bets
-            elif result in red_numbers and "red" in guess.lower():
-                roulette_money += bet
-                print("You guessed red and the result is red, you won!")
-            elif result not in red_numbers and "red" in guess.lower():
-                roulette_money -= bet
-                print("You guessed red and the result is black, you lost!")
-            elif result in black_numbers and "black" in guess.lower():
-                roulette_money += bet
-                print("You guessed black and the result is black, you won!")
-            elif result not in black_numbers and "black" in guess.lower():
-                roulette_money -= bet
-                print("You gussed black and the result is red, you lost!")
-
-
-            # high/low bets
-            elif "low" in guess.lower() and 0 < result <= 18:
-                roulette_money += bet
-                print("You guessed low and result is low. you won!")
-            elif "low" in guess.lower() and result > 18:
-                roulette_money -= bet
-                print("You guessed low and result is high. you lost!")
-            elif "high" in guess.lower() and 18 < result <= 36:
-                roulette_money += bet
-                print("You guessed high and result is high. You won!")
-            elif "high" in guess.lower() and result < 18:
-                roulette_money -= bet
-                print("You guessed high and result is low. You lost!")
-
-
-            # dozens bets
-            elif "1st dozen" in guess.lower() and 0 < result <= 12 or "first dozen" in guess.lower() and 0 < result <= 12:
-                roulette_money += (bet * 2)
-                print("You guessed 1st dozen and the result is first dozen, you won!")
-            elif "1st dozen" in guess.lower() and 12 < result <= 24 or "first dozen" in guess.lower() and 12 < result <= 24:
-                roulette_money -= (bet)
-                print("You guessed 1st dozen and the result is second dozen, you lost!")
-            elif "1st dozen" in guess.lower() and 24 < result or "first dozen" in guess.lower() and 24 < result:
-                roulette_money -= (bet)
-                print("You guessed first dozen and the result is third dozen, you lost!")
-            elif "2nd dozen" in guess.lower() and 12 < result <= 24 or "second dozen" in guess.lower() and 12 < result <= 24:
-                roulette_money += (bet * 2)
-                print("You guessed 2nd dozen and the result is second dozen, you won!")
-            elif "2nd dozen" in guess.lower() and 0 < result <= 12 or "second dozen" in guess.lower() and 0 < result <= 12:
-                roulette_money -= (bet)
-                print("You guessed 2nd dozen and the result is first dozen, you lost!")
-            elif "2nd dozen" in guess.lower() and 24 < result or "second dozen" in guess.lower() and 24 < result:
-                roulette_money -= (bet)
-                print("You guseed second dozen and the result is third dozen, you lost!")
-            elif "3rd dozen" in guess.lower() and 24 < result or "third dozen" in guess.lower() and 24 < result:
-                roulette_money += (bet * 2)
-                print("You guessed 3rd dozen and the result is third dozen, you won!")
-            elif "3rd dozen" in guess.lower() and 0 < result <= 12 or "third dozen" in guess.lower() and 0 < result <= 12:
-                roulette_money -= (bet)
-                print("You guessed 3rd dozen and the result is first dozen, you lost!")
-            elif "3rd dozen" in guess.lower() and 12 < result <= 24 or "third dozen" in guess.lower() and 12 < result <= 24:
-                roulette_money -= (bet)
-                print("You guessed 3rd dozen and the result is second dozen, you lost!")
-
-
-
-            # columns bets
-            elif "1st column" in guess.lower() and result in first_column or "first column" in guess.lower() and result in first_column:
-                roulette_money += (bet * 2)
-                print("You guessed 1st column and the result is first column, you won!")
-            elif "1st column" in guess.lower() and result in second_column or "first column" in guess.lower() and result in second_column:
-                roulette_money -= (bet)
-                print("You guessed 1st column and the result is second column, you lost!")
-            elif "1st column" in guess.lower() and result in third_column or "first column" in guess.lower() and result in third_column:
-                roulette_money -= (bet)
-                print("You guessed 1st column and the result is third column, you lost!")
-            elif "2nd column" in guess.lower() and result in second_column or "second column" in guess.lower() and result in second_column:
-                roulette_money += (bet * 2)
-                print("You guessed 2nd column and the result is 2nd column, you won!")
-            elif "2nd column" in guess.lower() and result in first_column or "second column" in guess.lower() and result in first_column:
-                roulette_money -= (bet)
-                print("You guessed 2nd column and the result is 1st column, you lost!")
-            elif "2nd column" in guess.lower() and result in third_column or "second column" in guess.lower() and result in third_column:
-                roulette_money -= (bet)
-                print("You guessed 2nd column and the result is 3rd column, you lost!")
-            elif "3rd column" in guess.lower() and result in third_column or "third column" in guess.lower() and result in third_column:
-                roulette_money += (bet * 2)
-                print("You guessed 3rd column and the result is 3rd column, you won!")
-            elif "3rd column" in guess.lower() and result in first_column or "third column" in guess.lower() and result in first_column:
-                roulette_money -= (bet)
-                print("You guessed 3rd column and the result is 1st column, you lost!")
-            elif "3rd column" in guess.lower() and result in second_column or "third column" in guess.lower() and result in second_column:
-                roulette_money -= (bet)
-                print("You guessed 3rd column and the result is 2nd column, you lost!")
-
+            string(result, guess, bet)
         # split bets
         if isinstance(guess, list) and len(guess) == 2:
-            if guess[0] + 1 != guess[1] and guess[0] + 3 != guess[1]:
-                print("invalid guess, second number should be first number + 1 or first number + 3")
-            else:
-                if result == -1:
-                    roulette_money -= (bet)
-                    print("Double Zero, you lost!")
-                elif result == 0:
-                    roulette_money -= (bet)
-                    print("Zero, you lost!")
-                elif result in guess:
-                    roulette_money += (bet * 17)
-                    print("You guessed {guess} and the result is {result}, you won!".format(guess=guess, result=result))
-                else:
-                    roulette_money -= (bet)
-                    print("You guessed {guess} and the result is {result}, you lost!".format(guess=guess, result=result))
-
-        # street bets
-
+            split_bet(result, guess, bet)
+        #street bets
         if isinstance(guess, list) and len(guess) == 3:
-            if guess[0] + 1 != guess[1] or guess[1] + 1 != guess[2]:
-                print("Invalid bet, 2nd number should bet 1st number + 1 and 3rd number should be 2nd number plus 1")
-            else:
-                if result == -1:
-                    roulette_money -= (bet)
-                    print("Double Zero, you lost!")
-                elif result == 0:
-                    roulette_money -= (bet)
-                    print("Zero, you lost!")
-                elif result in guess:
-                    roulette_money += (bet * 11)
-                    print("You guessed {guess} and the result is {result}, you won!".format(guess=guess, result=result))
-                else:
-                    roulette_money -= (bet)
-                    print("You guessed {guess} and the result is {result}, you lost!".format(guess=guess, result=result))
-
+            street_bet(result, guess, bet)
         # square bets
         if isinstance(guess, list) and len(guess) == 4:
-            if guess[0] + 1 != guess[1] or guess[0] + 2 != guess[2] or guess[2] + 1 != guess[3]:
-                print(
-                    "Invalid guess for a square bet, numbers must be 4 consecutive numbers. You guessed [{zero}, {one}, {two}, {three}], please enter four consective numbers.".format(
-                        zero=guess[0], one=guess[1], two=guess[2], three=guess[3]))
-            else:
-                if result == -1:
-                    roulette_money -= (bet)
-                    print("Double Zero, you lost!")
-                elif result == 0:
-                    roulette_money -= (bet)
-                    print("Zero, you lost!")
-                elif result in guess:
-                    roulette_money += (bet * 8)
-                    print("You guessed {guess} and the result is {result}, you won!".format(guess=guess, result=result))
-                else:
-                    roulette_money -= (bet)
-                    print("You guessed {guess} and the result is {result}, you lost!".format(guess=guess, result=result))
-
-        # 5 number bet
+            square_bet(result, guess, bet)
+        # 5 number bets
         if isinstance(guess, list) and len(guess) == 5:
-            if guess != [-1, 0, 1, 2, 3]:
-                print("Invalid bet. Please enter [-1, 0, 1, 2, 3] for a 5 number bet".format(guess=guess))
-            else:
-                if result in guess:
-                    roulette_money += (bet * 6)
-                    if result == -1:
-                        print("Double Zero, you won!")
-                    elif result == 0:
-                        print("Zero, you won!")
-                    else:
-                        print("Result was {result}, you won!".format(result=result))
-                else:
-                    roulette_money -= (bet)
-                    print("Result is {result}, you lost!".format(result=result))
-
-        # six line bets
+            five_number_bet(result, guess, bet)
+        # 6 line bets
         if isinstance(guess, list) and len(guess) == 6:
-            if guess[0] + 1 != guess[1] or guess[1] + 1 != guess[2] or guess[2] + 1 != guess[3] or guess[3] + 1 != guess[4] or guess[4] + 1 != guess[5] or guess[
-                0] not in first_column:
-                print("Invalid six line bet, you entered {guess}. please enter six consecutive numbers".format(guess=guess))
-            else:
-                if result == -1:
-                    roulette_money -= (bet)
-                    print("Double Zero, you lost!")
-                elif result == 0:
-                    roulette_money -= (bet)
-                    print("Zero, you lost!")
-                elif result in guess:
-                    roulette_money += (bet * 5)
-                    print("You guessed {guess} and the result is {result}, you won!".format(guess=guess, result=result))
-                else:
-                    roulette_money -= (bet)
-                    print("You guessed {guess} and the result is {result}, you lost!".format(guess=guess, result=result))
+            six_line_bet(result, guess, bet)
 
-        # invalid bet type, re-enter bet in function
-        if isinstance(guess, list) and len(guess) != 2 and len(guess) != 3 and len(guess) != 4 and len(guess) != 5 and len(guess) != 6:
-            print(
-                "You entered an invalid argument into the function please enter one of the following: \n An integer for a straight number bet \n \"odd\" or \"even\" for an odd/even bet \n \"red\" or \"black\" for a red/black bet \n \"high\" or \"low\" for a high/low bet \n \"1st dozen\", \"2nd dozen\" or \"3rd dozen\" for a dozens bet \n \"1st column\", \"2nd column\" or \"3rd column\" for a columns bet \n A list of 2 consecutive numbers for a split bet \n A list of 3 consecutive numbers for a street bet \n A list of 4 numbers for a sqaure bet \n A list of 5 numbers from -1 to 3 for a 5 number bet \n A list of 6 numbers for a six line bet.")
-        if isinstance(guess,
-                      str) and "red" not in guess.lower() and "black" not in guess.lower() and "high" not in guess.lower() and "low" not in guess.lower() and "even" not in guess.lower() and "odd" not in guess.lower() and "1st column" not in guess.lower() and "first column" not in guess.lower() and "2nd column" not in guess.lower() and "second column" not in guess.lower() and "3rd column" not in guess.lower() and "third column" not in guess.lower() and "1st dozen" not in guess.lower() and "first dozen" not in guess.lower() and "2nd dozen" not in guess.lower() and "second dozen" not in guess.lower() and "3rd dozen" not in guess.lower() and "third dozen" not in guess.lower():
-            print(
-                "You entered an invalid argument into the function please enter one of the following: \n An integer for a straight number bet \n \"odd\" or \"even\" for an odd/even bet \n \"red\" or \"black\" for a red/black bet \n \"high\" or \"low\" for a high/low bet \n \"1st dozen\" or \"first dozen\", \"2nd dozen\" or \"second dozen\" or \"3rd dozen\" or \"third dozen\" for a dozens bet \n \"1st column\" or \"first column\", \"2nd column\" or \"second column\" or \"3rd column\" or \"third column\" for a columns bet \n A list of 2 numbers for a split bet \n A list of 3 consecutive numbers for a street bet \n A list of 4 numbers for a sqaure bet \n A list of 6 numbers for a six line bet.")
-
-        if result == - 1:
-            print("00")
-            print("bet was {bet}".format(bet=bet))
-            print("Roulette money total is $: {money}".format(money=roulette_money))
-        else:
-            print(result)
-            print("Bet was ${bet}".format(bet=bet))
-            print("Roulette money total is: ${money}".format(money=roulette_money))
+        print("Bet was ${bet}".format(bet=bet))
+        print("Roulette money total is: ${money}".format(money=roulette_money))
 
     return
+
+#Helper functions for the roulette function to make reading code easier.
+def integer(result, guess, bet):
+    global roulette_money
+    if result == -1:
+        roulette_money -= (bet)
+        print("Double zero, you lost!")
+    elif result == 0:
+        roulette_money -= (bet)
+        print("Zero, you lost!")
+    elif result == guess:
+            roulette_money += (bet * 35)
+            print("You guessed {guess} and the result was {result}, you won!".format(guess=guess, result=result))
+    elif result != guess:
+            roulette_money -= (bet)
+            print("You guessed {guess} and the result was {result}, you lost!".format(guess=guess, result=result))
+
+def string(result, guess, bet):
+    global roulette_money
+    if result == - 1:
+        roulette_money -= bet
+        print("Double zero, you lost!")
+    elif result == 0:
+        roulette_money -= bet
+        print("Zero, you lost!")
+
+    # odds and evens bets
+    elif "even" in guess.lower() and result % 2 == 0:
+        roulette_money += bet
+        print("You guessed {guess} and the result was {result}, You won!".format(guess=guess, result=result))
+    elif "even" in guess.lower() and result % 2 != 0:
+        roulette_money -= bet
+        print("You guessed {guess} and the result was {result}, you lost!".format(guess=guess, result=result))
+    elif "odd" in guess.lower() and result % 2 == 0:
+        roulette_money -= bet
+        print("You guessed {guess} and the result was {result}, you lost!".format(guess=guess, result=result))
+    elif "odd" in guess.lower() and result % 2 != 0:
+        roulette_money += bet
+        print("You guessed {guess} and the result is {result}, You won!".format(guess=guess, result=result))
+
+    # red/black bets
+    elif result in red_numbers and "red" in guess.lower():
+        roulette_money += bet
+        print("You guessed red and the result is red, you won!")
+    elif result not in red_numbers and "red" in guess.lower():
+        roulette_money -= bet
+        print("You guessed red and the result is black, you lost!")
+    elif result in black_numbers and "black" in guess.lower():
+        roulette_money += bet
+        print("You guessed black and the result is black, you won!")
+    elif result not in black_numbers and "black" in guess.lower():
+        roulette_money -= bet
+        print("You gussed black and the result is red, you lost!")
+
+    # high/low bets
+    elif "low" in guess.lower() and 0 < result <= 18:
+        roulette_money += bet
+        print("You guessed low and result is low. you won!")
+    elif "low" in guess.lower() and result > 18:
+        roulette_money -= bet
+        print("You guessed low and result is high. you lost!")
+    elif "high" in guess.lower() and 18 < result <= 36:
+        roulette_money += bet
+        print("You guessed high and result is high. You won!")
+    elif "high" in guess.lower() and result < 18:
+        roulette_money -= bet
+        print("You guessed high and result is low. You lost!")
+
+    # dozens bets
+    elif "1st dozen" in guess.lower() and 0 < result <= 12 or "first dozen" in guess.lower() and 0 < result <= 12:
+        roulette_money += (bet * 2)
+        print("You guessed 1st dozen and the result is first dozen, you won!")
+    elif "1st dozen" in guess.lower() and 12 < result <= 24 or "first dozen" in guess.lower() and 12 < result <= 24:
+        roulette_money -= (bet)
+        print("You guessed 1st dozen and the result is second dozen, you lost!")
+    elif "1st dozen" in guess.lower() and 24 < result or "first dozen" in guess.lower() and 24 < result:
+        roulette_money -= (bet)
+        print("You guessed first dozen and the result is third dozen, you lost!")
+    elif "2nd dozen" in guess.lower() and 12 < result <= 24 or "second dozen" in guess.lower() and 12 < result <= 24:
+        roulette_money += (bet * 2)
+        print("You guessed 2nd dozen and the result is second dozen, you won!")
+    elif "2nd dozen" in guess.lower() and 0 < result <= 12 or "second dozen" in guess.lower() and 0 < result <= 12:
+        roulette_money -= (bet)
+        print("You guessed 2nd dozen and the result is first dozen, you lost!")
+    elif "2nd dozen" in guess.lower() and 24 < result or "second dozen" in guess.lower() and 24 < result:
+        roulette_money -= (bet)
+        print("You guseed second dozen and the result is third dozen, you lost!")
+    elif "3rd dozen" in guess.lower() and 24 < result or "third dozen" in guess.lower() and 24 < result:
+        roulette_money += (bet * 2)
+        print("You guessed 3rd dozen and the result is third dozen, you won!")
+    elif "3rd dozen" in guess.lower() and 0 < result <= 12 or "third dozen" in guess.lower() and 0 < result <= 12:
+        roulette_money -= (bet)
+        print("You guessed 3rd dozen and the result is first dozen, you lost!")
+    elif "3rd dozen" in guess.lower() and 12 < result <= 24 or "third dozen" in guess.lower() and 12 < result <= 24:
+        roulette_money -= (bet)
+        print("You guessed 3rd dozen and the result is second dozen, you lost!")
+
+    # columns bets
+    elif "1st column" in guess.lower() and result in first_column or "first column" in guess.lower() and result in first_column:
+        roulette_money += (bet * 2)
+        print("You guessed 1st column and the result is first column, you won!")
+    elif "1st column" in guess.lower() and result in second_column or "first column" in guess.lower() and result in second_column:
+        roulette_money -= (bet)
+        print("You guessed 1st column and the result is second column, you lost!")
+    elif "1st column" in guess.lower() and result in third_column or "first column" in guess.lower() and result in third_column:
+        roulette_money -= (bet)
+        print("You guessed 1st column and the result is third column, you lost!")
+    elif "2nd column" in guess.lower() and result in second_column or "second column" in guess.lower() and result in second_column:
+        roulette_money += (bet * 2)
+        print("You guessed 2nd column and the result is 2nd column, you won!")
+    elif "2nd column" in guess.lower() and result in first_column or "second column" in guess.lower() and result in first_column:
+        roulette_money -= (bet)
+        print("You guessed 2nd column and the result is 1st column, you lost!")
+    elif "2nd column" in guess.lower() and result in third_column or "second column" in guess.lower() and result in third_column:
+        roulette_money -= (bet)
+        print("You guessed 2nd column and the result is 3rd column, you lost!")
+    elif "3rd column" in guess.lower() and result in third_column or "third column" in guess.lower() and result in third_column:
+        roulette_money += (bet * 2)
+        print("You guessed 3rd column and the result is 3rd column, you won!")
+    elif "3rd column" in guess.lower() and result in first_column or "third column" in guess.lower() and result in first_column:
+        roulette_money -= (bet)
+        print("You guessed 3rd column and the result is 1st column, you lost!")
+    elif "3rd column" in guess.lower() and result in second_column or "third column" in guess.lower() and result in second_column:
+        roulette_money -= (bet)
+        print("You guessed 3rd column and the result is 2nd column, you lost!")
+
+def split_bet(result, guess, bet):
+    global roulette_money
+    if guess[0] + 1 != guess[1] and guess[0] + 3 != guess[1]:
+        print("invalid guess, second number should be first number + 1 or first number + 3")
+    else:
+        if result == -1:
+            roulette_money -= bet
+            print("Double Zero, you lost!")
+        elif result == 0:
+            roulette_money -= bet
+            print("Zero, you lost!")
+        elif result in guess:
+            roulette_money += (bet * 17)
+            print("You guessed {guess} and the result is {result}, you won!".format(guess=guess, result=result))
+        else:
+            roulette_money -= bet
+            print("You guessed {guess} and the result is {result}, you lost!".format(guess=guess, result=result))
+
+def street_bet(result, guess, bet):
+    global roulette_money
+    if guess[0] + 1 != guess[1] or guess[1] + 1 != guess[2]:
+        print("Invalid bet, 2nd number should bet 1st number + 1 and 3rd number should be 2nd number plus 1")
+    else:
+        if result == -1:
+            roulette_money -= (bet)
+            print("Double Zero, you lost!")
+        elif result == 0:
+            roulette_money -= (bet)
+            print("Zero, you lost!")
+        elif result in guess:
+            roulette_money += (bet * 11)
+            print("You guessed {guess} and the result is {result}, you won!".format(guess=guess, result=result))
+        else:
+            roulette_money -= (bet)
+            print("You guessed {guess} and the result is {result}, you lost!".format(guess=guess, result=result))
+
+def square_bet(result, guess, bet):
+    global roulette_money
+    if guess[0] + 1 != guess[1] or guess[0] + 3 != guess[2] or guess[2] + 1 != guess[3]:
+        print(
+            "Invalid guess for a square bet. You guessed [{zero}, {one}, {two}, {three}], please enter a valid square bet.".format(
+                zero=guess[0], one=guess[1], two=guess[2], three=guess[3]))
+    else:
+        if result == -1:
+            roulette_money -= (bet)
+            print("Double Zero, you lost!")
+        elif result == 0:
+            roulette_money -= (bet)
+            print("Zero, you lost!")
+        elif result in guess:
+            roulette_money += (bet * 8)
+            print("You guessed {guess} and the result is {result}, you won!".format(guess=guess, result=result))
+        else:
+            roulette_money -= (bet)
+            print("You guessed {guess} and the result is {result}, you lost!".format(guess=guess, result=result))
+
+def five_number_bet(result, guess, bet):
+    global roulette_money
+    if guess != [-1, 0, 1, 2, 3]:
+        print("Invalid bet. Please enter [-1, 0, 1, 2, 3] for a 5 number bet".format(guess=guess))
+    else:
+        if result in guess:
+            roulette_money += (bet * 6)
+            if result == -1:
+                print("Double Zero, you won!")
+            elif result == 0:
+                print("Zero, you won!")
+            else:
+                print("Result was {result}, you won!".format(result=result))
+        else:
+            roulette_money -= (bet)
+            print("Result is {result}, you lost!".format(result=result))
+
+def six_line_bet(result, guess, bet):
+    global roulette_money
+    if guess[0] + 1 != guess[1] or guess[1] + 1 != guess[2] or guess[2] + 1 != guess[3] or guess[3] + 1 != guess[4] or guess[4] + 1 != guess[5] or guess[
+        0] not in first_column:
+        print("Invalid six line bet, you entered {guess}. please enter six consecutive numbers".format(guess=guess))
+    else:
+        if result == -1:
+            roulette_money -= (bet)
+            print("Double Zero, you lost!")
+        elif result == 0:
+            roulette_money -= (bet)
+            print("Zero, you lost!")
+        elif result in guess:
+            roulette_money += (bet * 5)
+            print("You guessed {guess} and the result is {result}, you won!".format(guess=guess, result=result))
+        else:
+            roulette_money -= (bet)
+            print("You guessed {guess} and the result is {result}, you lost!".format(guess=guess, result=result))
+
+
+
+
 
 
 
@@ -462,9 +473,9 @@ def roulette(guess, bet):
 # roulette([1,2,3,4],5)
 # roulette([1,2,3,4,5,6], 5)
 # roulette([1,2,3,4,5,6,7], 5)
-# roulette("testing", 5)
+#roulette("testing", 5)
 # roulette(-5,5)
-# roulette(5, -5)
+#roulette(5, -5)
 # roulette(-5, -5)
 # dave = p1_money
 # roulette(100, 5)
